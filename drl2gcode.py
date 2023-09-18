@@ -47,6 +47,14 @@ parser.add_argument(
     action="store_true",
 )
 
+parser.add_argument(
+    "-o",
+    "--offset",
+    help="Offset all coordinates, X Y",
+    nargs=2,
+    type=float,
+    default=[0, 0],
+)
 
 args = parser.parse_args()
 print(args)
@@ -129,14 +137,17 @@ with open(args.drlfile[0]) as fp:
             newl1 = "".join(
                 ["G1 F", str(args.z_move_speed), " Z", str(args.safe_height)]
             )
+            x = float(line.split("Y")[0].strip("X")) + args.offset[0]
+            y = float(line.split("Y")[1].strip("\r\n")) + args.offset[1]
+            # print(x, y)
             newl2 = "".join(
                 [
                     "G1 F",
                     str(args.xy_move_speed),
-                    " ",
-                    line.split("Y")[0],
+                    " X",
+                    str(x),
                     " Y",
-                    line.split("Y")[1].strip("\r\n"),
+                    str(y),
                 ]
             )
 
